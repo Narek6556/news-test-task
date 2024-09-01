@@ -1,31 +1,10 @@
-import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, View } from "react-native";
-import { NavigationContainer } from "@react-navigation/native";
-import HomeNavigation from "./src/navigation/home_screen.navigation";
-
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-
-const BottomTabNavigator = createBottomTabNavigator();
+import NavigationWrapper from "./src/navigation/navigation_wrapper";
+import AppProvidersWrapper from "./src/app_providers_wrapper";
 
 export default function App() {
     return (
-        <NavigationContainer>
-            <BottomTabNavigator.Navigator initialRouteName={ScreenNames.home}>
-                <BottomTabNavigator.Screen
-                    name={ScreenNames.home}
-                    component={HomeNavigation}
-                    options={{ headerShown: false }}
-                />
-            </BottomTabNavigator.Navigator>
-        </NavigationContainer>
+        <AppProvidersWrapper>
+            <NavigationWrapper />
+        </AppProvidersWrapper>
     );
 }
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: "#fff",
-        alignItems: "center",
-        justifyContent: "center",
-    },
-});

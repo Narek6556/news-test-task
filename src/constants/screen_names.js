@@ -1,4 +1,5 @@
 export default ScreenNames = {
-    home: 'Home',
+    home_stack: 'HomeStack',
     article_details: 'ArticleDetails',
+    home: 'Home',
 }
