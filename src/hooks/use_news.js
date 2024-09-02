@@ -1,9 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import { useInfiniteQuery } from "@tanstack/react-query";
 
 import { NewsApi } from "../api/news_api";
-import { useEffect } from "react";
 
 export const useNews = () => {
     const [news, setNews] = useState([]);
