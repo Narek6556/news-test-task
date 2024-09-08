@@ -1,32 +1,51 @@
-import { View, StyleSheet, Image, Text } from "react-native";
+import { View, StyleSheet, Image, Text, Pressable } from "react-native";
+import { useNavigation } from "@react-navigation/native";
+import ScreenNames from "../../../constants/screen_names";
+import Animated from "react-native-reanimated";
 
 export default function NewsItem({ newsItem }) {
-    const { webPublicationDate, webTitle, fields } = newsItem;
+    const { webPublicationDate, webTitle, fields, id } = newsItem;
+    const navigation = useNavigation();
 
-    // console.log("SRC: ", fields.thumbnail);
+    function onDetailsPress() {
+        navigation.navigate(ScreenNames.article_details, {
+            id,
+        });
+    }
 
     return (
-        <View style={[styles.container, styles.shadowStyles]}>
-            <View style={styles.row}>
-                <View style={[styles.column, styles.image]}>
-                    <Image
-                        source={{
-                            uri: "http://media.guim.co.uk/c66852bfdbebb7c12cf66b9b98ccc3fd55fafabf/0_13_640_384/500.jpg",
-                        }}
-                    />
-                </View>
-                <View style={styles.column}>
-                    <Text
-                        style={styles.title}
-                        numberOfLines={2}
-                        ellipsizeMode="tail"
+        <Pressable onPress={onDetailsPress}>
+            <View style={[styles.container, styles.shadowStyles]}>
+                <View style={styles.row}>
+                    <View
+                        style={[
+                            styles.column,
+                            styles.image,
+                            { alignItems: "center", justifyContent: "center" },
+                        ]}
                     >
-                        {webTitle}
-                    </Text>
-                    <Text style={styles.date}>{webPublicationDate}</Text>
+                        {fields && fields.thumbnail && (
+                            <Image
+                                source={{
+                                    uri: fields.thumbnail,
+                                }}
+                                style={styles.image}
+                            />
+                        )}
+                    </View>
+                    <View style={styles.column}>
+                        <Text
+                            style={styles.title}
+                            numberOfLines={2}
+                            ellipsizeMode="tail"
+                        >
+                            {webTitle}
+                        </Text>
+                        <Text style={styles.date}>{webPublicationDate}</Text>
+                    </View>
                 </View>
             </View>
-        </View>
+        </Pressable>
     );
 }
 
@@ -48,9 +67,8 @@ const styles = StyleSheet.create({
         justifyContent: "space-between",
     },
     image: {
-        // backgroundColor: "gray",
         width: 80,
-        height: 40,
+        height: 50,
     },
     title: {
         width: 230,
