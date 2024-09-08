@@ -5,24 +5,14 @@ function createUrl({ query, page }) {
     return `${apiUrl}/search?page=${page}&show-fields=thumbnail&q=${query}&api-key=${apiKey}`;
 }
 
-async function fetchNews({ pageParam }) {
-    try {
-        const response = await fetch(createUrl({ page: pageParam }));
+function constructIndvidualArticle(id) {
+    const apiUrl = process.env.EXPO_PUBLIC_API_URL;
+    const apiKey = process.env.EXPO_PUBLIC_API_KEY;
 
-        const responseJson = await response.json();
-
-        return responseJson.response.results;
-    } catch (err) {
-        console.log("[API ERROR]", err);
-    }
-
-    return null;
+    return `${apiUrl}/${id}?show-fields=thumbnail,body&api-key=${apiKey}`;
 }
 
 async function fetchNewsWithQuery({ page, query }) {
-    // const { pageParam, queryKey } = params;
-    // const [key, searhQuery] = queryKey;
-
     try {
         const response = await fetch(createUrl({ page: page, query: query }));
 
@@ -42,7 +32,23 @@ async function fetchNewsWithQuery({ page, query }) {
     return null;
 }
 
+async function fetchNewsById(id) {
+    try {
+        const response = await fetch(constructIndvidualArticle(id));
+        const responseJson = await response.json();
+
+        console.log("[REQUEST]: ", constructIndvidualArticle(id), responseJson);
+        console.log(JSON.stringify(responseJson.response.content));
+
+        return responseJson.response.content;
+    } catch (err) {
+        console.log("[API ERROR]", err);
+    }
+
+    return null;
+}
+
 export const NewsApi = {
-    fetchNews,
     fetchNewsWithQuery,
+    fetchNewsById,
 };

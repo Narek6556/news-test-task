@@ -17,7 +17,7 @@ export default function NavigationWrapper() {
                     component={HomeNavigation}
                     options={{
                         headerShown: false,
-                        // tabBarStyle: { display: "none" },
+                        tabBarStyle: { display: "none" },
                     }}
                 />
             </BottomTabNavigator.Navigator>

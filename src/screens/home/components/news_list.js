@@ -30,10 +30,6 @@ export default function NewsList({ navigation }) {
         return <View />;
     };
 
-    const onDetailsPress = () => {
-        navigation.push(ScreenNames.article_details);
-    };
-
     if (isLoading)
         return (
             <View style={styles.loadingContainer}>
