@@ -1,38 +1,61 @@
-import { useState, useEffect } from "react";
+import { useEffect, useRef } from "react";
 
-import { useInfiniteQuery } from "@tanstack/react-query";
+import { NewsApi } from "../core/api/news_api";
 
-import { NewsApi } from "../api/news_api";
+import NewsActions from "../state/actions/news_actions";
+import { useNewsContext } from "../state/context/news_context";
 
-export const useNews = () => {
-    const [news, setNews] = useState([]);
+export function useNews() {
+    const page = useRef(1);
+    const { newsState, newsDispatch } = useNewsContext();
+    const dispatch = newsDispatch;
 
-    const { data, error, status, fetchNextPage } = useInfiniteQuery({
-        queryKey: ["news"],
-        queryFn: NewsApi.fetchNews,
-        initialPageParam: 1,
-        getNextPageParam: (lastPage, allPages) => {
-            if (lastPage.length === 0) return null;
+    const {
+        getNews,
+        replaceWithNewPage,
+        getNextNews,
+        concatWithNewPage,
+        getNewsError,
+        getNextNewsError,
+    } = NewsActions;
 
-            return allPages.length + 1;
-        },
-    });
+    function getInitialNews() {
+        (async () => {
+            dispatch(getNews());
 
-    useEffect(() => {
-        if (data != null && data.pages != null) {
-            if (news.length > 0) {
-                setNews([...news, ...data.pages[data.pages.length - 1]]);
-            } else {
-                setNews([...data.pages[data.pages.length - 1]]);
+            try {
+                const news = await NewsApi.fetchNewsWithQuery({
+                    page: page.current,
+                    query: "",
+                });
+
+                dispatch(replaceWithNewPage(news));
+            } catch (err) {
+                dispatch(getNewsError());
             }
-            
+        })();
+    }
+
+    async function fetchNextPage() {
+        dispatch(getNextNews());
+        page.current += 1;
+
+        try {
+            const news = await NewsApi.fetchNewsWithQuery({
+                page: page.current,
+                query: newsState.query,
+            });
+
+            dispatch(concatWithNewPage(news));
+        } catch (err) {
+            dispatch(getNextNewsError(err));
         }
-    }, [data?.pages.length]);
+    }
+
+    useEffect(getInitialNews, []);
 
     return {
-        news: news,
-        error,
-        status,
+        newsState,
         fetchNextPage,
     };
-};
+}

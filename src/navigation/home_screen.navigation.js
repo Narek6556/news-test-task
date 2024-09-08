@@ -11,7 +11,9 @@ export default function HomeNavigation() {
             <Stack.Screen
                 name={ScreenNames.home}
                 component={HomeScreen}
-                options={{ title: "HomeScreen" }}
+                options={{
+                    headerShown: false,
+                }}
             />
             <Stack.Screen
                 name={ScreenNames.article_details}

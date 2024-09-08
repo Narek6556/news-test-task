@@ -9,15 +9,18 @@ const BottomTabNavigator = createBottomTabNavigator();
 export default function NavigationWrapper() {
     return (
         <NavigationContainer>
-                <BottomTabNavigator.Navigator
-                    initialRouteName={ScreenNames.home_stack}
-                >
-                    <BottomTabNavigator.Screen
-                        name={ScreenNames.home_stack}
-                        component={HomeNavigation}
-                        options={{ headerShown: false }}
-                    />
-                </BottomTabNavigator.Navigator>
-            </NavigationContainer>
+            <BottomTabNavigator.Navigator
+                initialRouteName={ScreenNames.home_stack}
+            >
+                <BottomTabNavigator.Screen
+                    name={ScreenNames.home_stack}
+                    component={HomeNavigation}
+                    options={{
+                        headerShown: false,
+                        // tabBarStyle: { display: "none" },
+                    }}
+                />
+            </BottomTabNavigator.Navigator>
+        </NavigationContainer>
     );
 }

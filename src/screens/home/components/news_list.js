@@ -1,32 +1,61 @@
-import { FlatList, View, Text, StyleSheet } from "react-native";
+import {
+    FlatList,
+    View,
+    Text,
+    StyleSheet,
+    ActivityIndicator,
+} from "react-native";
 
 import { useNews } from "../../../hooks/use_news";
+import NewsItem from "./news_item";
 
 export default function NewsList({ navigation }) {
-    const { news, error, status, fetchNextPage } = useNews();
+    const { newsState, fetchNextPage } = useNews();
+
+    const { isLoading, isLoadingNext, error, nextError, news } = newsState;
+
+    const newsList = news;
 
     const onEndReached = () => {
-        console.log("Reached End");
+        if (isLoadingNext) return;
         fetchNextPage();
     };
 
     const _renderNewsItem = ({ item }) => {
-        return <Text style={styles.item}>{item.webTitle}</Text>;
+        return <NewsItem newsItem={item} />;
+    };
+
+    const _renderFooter = () => {
+        if (isLoadingNext) return <ActivityIndicator />;
+        return <View />;
     };
 
     const onDetailsPress = () => {
         navigation.push(ScreenNames.article_details);
     };
 
+    if (isLoading)
+        return (
+            <View style={styles.loadingContainer}>
+                <ActivityIndicator size={"large"} />
+            </View>
+        );
+
+    if (error) return <Text>{"Error"}</Text>;
+
     return (
-        <View>
-            {news != null && (
+        <View style={{ flex: 1 }}>
+            {newsList.length > 0 && (
                 <FlatList
-                    data={news}
+                    data={newsList}
+                    initialNumToRender={10}
                     renderItem={_renderNewsItem}
                     onEndReached={onEndReached}
                     keyExtractor={(item) => item.id}
-                    onEndReachedThreshold={0.5}
+                    onEndReachedThreshold={0.3}
+                    showsVerticalScrollIndicator={false}
+                    extraData={isLoading}
+                    ListFooterComponent={_renderFooter}
                 />
             )}
         </View>
@@ -34,10 +63,9 @@ export default function NewsList({ navigation }) {
 }
 
 const styles = StyleSheet.create({
-    item: {
-        backgroundColor: "#f9c2ff",
-        padding: 20,
-        marginVertical: 8,
-        marginHorizontal: 16,
+    loadingContainer: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
     },
 });
